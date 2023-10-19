@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
-from flask import Markup
+# from flask import Markup
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, RadioField, SelectField
 from wtforms.validators import DataRequired, InputRequired 
 from wtforms import widgets
 from wtforms.widgets import html_params
-from markupsafe import escape
+from markupsafe import escape, Markup
 
 
 class SelectMod(widgets.Select):

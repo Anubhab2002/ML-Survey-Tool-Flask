@@ -4,11 +4,11 @@
 	<div class="content-section border p-3">
 		<h3>Chat History</h3>
 		<!-- chat history: loop through and print utterances from question.context -->
-		{% for utterance, speaker in question.context %}
+		{% for Utterance, Speaker in question.context %}
 			<div class="row">
 				<div class="col-md-6 small">
 					<p>
-						{{ speaker }}: {{ utterance }}
+						{{ Speaker }}: {{ Utterance["Utterance"] }}
 					</p>
 				</div>
 			</div>
@@ -33,7 +33,7 @@
 
 		<!-- form to submit user's response -->
 
-		<form id="surveyform" class="border p-3 m-3" method="POST" action="">
+		<form id="surveyform" class="border p-3 m-3" method="POST" action="survey">
 			{{ form.hidden_tag() }}
 			<fieldset>
 				<div class="row">

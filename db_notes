@@ -1,0 +1,11 @@
+['user', 'question', 'submission']
+
+{'submission': Empty DataFrame
+ Columns: [id, date_added, submission_json, user_id, question_id, is_submitted]
+ Index: []}
+
+"question": Index(['id', 'sample_id', 'context', 'response_a', 'response_b',
+       'response_a_src', 'response_b_src', 'date_added', 'is_active'],
+      dtype='object')
+
+"user": Index(['id', 'prolific_pid', 'ref_url', 'date_added'], dtype='object')
