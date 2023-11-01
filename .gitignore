@@ -4,4 +4,5 @@
 **.csv
 **.db
 **.json
-**venv**
+venv/
+db_notes
