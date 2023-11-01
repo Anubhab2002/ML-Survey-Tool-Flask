@@ -4,11 +4,11 @@
 	<div class="content-section border p-3">
 		<h3>Chat History</h3>
 		<!-- chat history: loop through and print utterances from question.context -->
-		{% for Utterance, Speaker in question.context %}
+		{% for utterance, speaker in question.context %}
 			<div class="row">
 				<div class="col-md-6 small">
 					<p>
-						{{ Speaker }}: {{ Utterance["Utterance"] }}
+					<strong>{{ speaker }}</strong>: {{ utterance }}
 					</p>
 				</div>
 			</div>
@@ -17,12 +17,14 @@
 		<!-- response from System 1 and 2 in side-by-side columns -->
 		<div class="row">
 			<div class="col-md-6 border-right p-3">
-				<h4>System 1 Response</h3>
-				<p class="small"> {{ question.response_a }} </p>
+				<div class="ml-3">
+					<h4>System 1 Response</h3>
+					<p class="small"><strong>Agent:</strong> {{ question.response_a }} </p>
+				</div>
 			</div>
 			<div class="col-md-6 p-3">
 				<h4>System 2 Response</h3>
-				<span class="small"> {{ question.response_b }} </span>
+				<p class="small"> <strong>Agent:</strong>{{ question.response_b }} </p>
 			</div>
 		</div>
 
@@ -33,38 +35,38 @@
 
 		<!-- form to submit user's response -->
 
-		<form id="surveyform" class="border p-3 m-3" method="POST" action="survey">
+		<form id="surveyform" class="border p-3 m-3" method="POST" action="">
 			{{ form.hidden_tag() }}
 			<fieldset>
 				<div class="row">
 					<div class="col-md-6 border-right p-3">
 						<h4 class="border-bottom pb-3 mb-3">Answer the questions below</h4>
 						<div class="form-group">
-							{{ form.q1.label(class="form-control-label small") }}
-							{{ form.q1(class="custom-select custom-select-sm") }}
+							{{ form.q1_a.label(class="form-control-label small") }}
+							{{ form.q1_a(class="custom-select custom-select-sm") }}
 							<small id="help_q1" class="form-text text-muted">
-								🛈 {{ form.q1.description }}
+								🛈 {{ form.q1_a.description }}
 							</small>
 						</div>
 						<div class="form-group">
-							{{ form.q2.label(class="form-control-label small") }}
-							{{ form.q2(class="custom-select custom-select-sm") }}
+							{{ form.q2_a.label(class="form-control-label small") }}
+							{{ form.q2_a(class="custom-select custom-select-sm") }}
 							<small id="help_q2" class="form-text text-muted">
-								🛈 {{ form.q2.description }}
+								🛈 {{ form.q2_a.description }}
 							</small>
 						</div>
 						<div class="form-group">
-							{{ form.q3.label(class="form-control-label small") }}
-							{{ form.q3(class="custom-select custom-select-sm") }}
+							{{ form.q3_a.label(class="form-control-label small") }}
+							{{ form.q3_a(class="custom-select custom-select-sm") }}
 							<small id="help_q3" class="form-text text-muted">
-								🛈 {{ form.q3.description }}
+								🛈 {{ form.q3_a.description }}
 							</small>
 						</div>
 						<div class="form-group">
-							{{ form.q4.label(class="form-control-label small") }}
-							{{ form.q4(class="custom-select custom-select-sm") }}
+							{{ form.q4_a.label(class="form-control-label small") }}
+							{{ form.q4_a(class="custom-select custom-select-sm") }}
 							<small id="help_q4" class="form-text text-muted">
-								🛈 {{ form.q4.description }}
+								🛈 {{ form.q4_a.description }}
 							</small>
 						</div>
 					</div>
@@ -72,36 +74,38 @@
 					<div class="col-md-6 p-3">
 						<h4 class="border-bottom pb-3 mb-3">Answer the questions below</h4>
 						<div class="form-group">
-							{{ form.q1.label(class="form-control-label small") }}
-							{{ form.q1(class="custom-select custom-select-sm") }}
+							{{ form.q1_b.label(class="form-control-label small") }}
+							{{ form.q1_b(class="custom-select custom-select-sm") }}
 							<small id="help_q1" class="form-text text-muted">
-								🛈 {{ form.q1.description }}
+								🛈 {{ form.q1_b.description }}
 							</small>
 						</div>
 						<div class="form-group">
-							{{ form.q2.label(class="form-control-label small") }}
-							{{ form.q2(class="custom-select custom-select-sm") }}
+							{{ form.q2_b.label(class="form-control-label small") }}
+							{{ form.q2_b(class="custom-select custom-select-sm") }}
 							<small id="help_q2" class="form-text text-muted">
-								🛈 {{ form.q2.description }}
+								🛈 {{ form.q2_b.description }}
 							</small>
 						</div>
 						<div class="form-group">
-							{{ form.q3.label(class="form-control-label small") }}
-							{{ form.q3(class="custom-select custom-select-sm") }}
+							{{ form.q3_b.label(class="form-control-label small") }}
+							{{ form.q3_b(class="custom-select custom-select-sm") }}
 							<small id="help_q3" class="form-text text-muted">
-								🛈 {{ form.q3.description }}
+								🛈 {{ form.q3_b.description }}
 							</small>
 						</div>
 						<div class="form-group">
-							{{ form.q4.label(class="form-control-label small") }}
-							{{ form.q4(class="custom-select custom-select-sm") }}
+							{{ form.q4_b.label(class="form-control-label small") }}
+							{{ form.q4_b(class="custom-select custom-select-sm") }}
 							<small id="help_q4" class="form-text text-muted">
-								🛈 {{ form.q4.description }}
+								🛈 {{ form.q4_b.description }}
 							</small>
 						</div>
-						<div class="form-group">
+						<div class="form-group invisible" hidden>
 							{{ form.hidden_timestamp_start }}
 							{{ form.hidden_timestamp_end }}
+							{{ form.question_id }}
+							<input id="q_id_val" type="text" name="q_id_val" value="{{ question.id }}">
 						</div>
 					</div>
 				</div>
@@ -121,15 +125,16 @@
 		$("#hidden_timestamp_start").val(time_start);
 		// Attach event listener to the form submit button
 		$("#submit").on("click", function(e) {
-			e.preventDefault(); // Prevent the default form submission behavior
 
 			// Get the input field values
 			time_end = new Date().getTime();
 			console.log(time_end - time_start);
 
 			$("#hidden_timestamp_end").val(time_end);
+			$("#question_id").val($("#q_id_val").val());
 
 			// Submit the form programmatically
+			console.log("submitting form");
 			$("#surveyform").submit();
 		});
   });

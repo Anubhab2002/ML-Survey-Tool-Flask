@@ -8,4 +8,4 @@
        'response_a_src', 'response_b_src', 'date_added', 'is_active'],
       dtype='object')
 
-"user": Index(['id', 'prolific_pid', 'ref_url', 'date_added'], dtype='object')
+"user": Index(['id', 'prolific_pid', 'ref_url', 'date_added'], dtype='object')      

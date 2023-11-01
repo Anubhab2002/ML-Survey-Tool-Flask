@@ -6,6 +6,7 @@ from sqlalchemy import func
 from flask import request, flash, redirect, url_for
 from flask import Flask
 from flask import render_template
+from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from forms import SurveyForm, LoginForm
@@ -15,9 +16,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c60ab121a433e814649e0640e73c1f2f'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 login_manager = LoginManager(app)
+csrf = CSRFProtect(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+# db.session.close_all_sessions()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -79,10 +82,15 @@ def allocate_questions(current_user):
     # Get a list of active users
     active_users = [current_user]
     
+    # for user in active_users:
+    #     for submission in user.submissions:
+    #         print(submission)
+    
     for user in active_users:
+        # print(user)
         # Get the questions already answered by the user
-        answered_questions = [submission.question_id for submission in user.submissions]
-
+        answered_questions = [submission.question_id for submission in user.submissions if submission.is_submitted]
+        print("ANSWERED QUESTIONS: ", answered_questions)
         # Get the questions with 2 answers already
         questions_with_2_answers = (
             Question.query.join(Submission, Question.id == Submission.question_id)
@@ -202,21 +210,9 @@ def survey():
         return redirect(url_for('login'))
     # Show a form with the fields from SurveyForm
     form = SurveyForm()
-
-    questions = Question.query.filter_by(is_active=True).all()
-    # question = questions[random.randint(0, len(questions)-1)] # here we are choosing randomly
-    question = allocate_questions(current_user)
-    formatted_data = format_context(question.context)
-    json_data = json.dumps(formatted_data, ensure_ascii=False, indent=2)
-    print("Context: ")
-    print(json_data)
-    question.context = json.loads(json_data)[-6:] # At max 6 utts
-    speakers = ['Agent', 'User']*len(question.context)
-    speakers = speakers[-len(question.context):]
-    question.context = list(zip(question.context, speakers))
-    print("CHECK: ", form.validate_on_submit())
-    print("FORM DATA: ", form.data)
-    if form.validate_on_submit()==False:
+    # print("CHECK: ", form.validate_on_submit())
+    # print("FORM DATA: ", form.data)
+    if form.validate_on_submit():
         # Print the form data to the console
         print("FORM DATA: ", form.data)
         # Save the form data to the database
@@ -225,6 +221,32 @@ def survey():
         submission.is_submitted = True
         db.session.commit()
         flash(f'Submission saved!', 'success')
+        print("Validation Passed")
+        return redirect('survey')
+    else:
+        print("Validation Failed")
+    questions = Question.query.filter_by(is_active=True).all()
+    # print(current_user)
+    # question = questions[random.randint(0, len(questions)-1)] # here we are choosing randomly
+    question = allocate_questions(current_user)
+    print("QUESTION: ", question)
+    formatted_data = format_context(question.context)
+    json_data = json.dumps(formatted_data, ensure_ascii=False, indent=2)
+    print("Context: ")
+    print(json_data)
+    question.context = json.loads(json_data)[-6:] # At max 6 utts
+    speakers = ['Agent', 'User']*len(question.context)
+    speakers = speakers[-len(question.context):]
+    question.context = list(zip(question.context, speakers))
+    
+    # questions = Question.query.filter_by(is_active=True).all()
+    # question = questions[random.randint(0, len(questions)-1)]
+    # # print("Context: ")
+    # # print(question.context)
+    # question.context = json.loads(question.context)[-6:] # At max 6 utts
+    # speakers = ['Agent', 'User']*len(question.context)
+    # speakers = speakers[-len(question.context):]
+    # question.context = list(zip(question.context, speakers))
     return render_template('survey.html', title='Survey', form=form, question=question)
 
 @app.route('/logout')
